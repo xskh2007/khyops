@@ -1,0 +1,64 @@
+You have 15 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+
+
+
+
+pip install
+django==2.1.8
+ansible==2.3.1.0
+
+celery==5.0.5
+django-celery-results==2.0.1
+redis==3.2.0
+eventlet
+
+
+celery -A khyops worker -l INFO -P eventlet
+
+  475  pip uninstall django-celery-results
+  476  pip install django-celery-results
+  500  yum install redis
+  502  service redis start
+
+http://www.iceyao.com.cn/2017/08/31/Ansible-API%E4%BD%BF%E7%94%A8/
+
+(khyops-venv) [root@localhost khyops]# python manage.py flush
+(khyops-venv) [root@localhost khyops]# python manage.py makemigrations
+Migrations for 'deploy':
+  deploy/migrations/0002_servers_sitetitle.py
+    - Add field sitetitle to servers
+(khyops-venv) [root@localhost khyops]# python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, deploy, sessions
+Running migrations:
+  Applying deploy.0002_servers_sitetitle... OK
+(khyops-venv) [root@localhost khyops]#
+
+python manage.py createsuperuser
+
+#www.kuaihuoyun.com
+
+https://github.com/feixuelove1009/CMDB
+
+
+$(this).closest('tr').find('#ip').text();
+
+
+
+
+
+PYTHONOPTIMIZE=1
+
+# 非常神奇的一句话
+current_process()._config = {'semprefix': '/mp'}
+我也是这么解决的 有大佬能分析下原因么
+
+@helloZwq 好像是 celery 用的 multiprocess 和 ansible 里的一些东西有啥冲突
+
+
+current_process()._config = {'semprefix': '/mp'}
+固定语句么，哪里引入的这个函数的 current_process （）
+
+from multiprocessing import current_process
+
+export PYTHONOPTIMIZE=1 && celery -A khyops worker -l DEBUG

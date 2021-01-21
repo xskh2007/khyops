@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p>请输入两个数字</p>
+<form action="/add/" method="get">
+    a: <input type="text" id="a" name="a"> <br>
+    b: <input type="text" id="b" name="b"> <br>
+    <p>result: <span id='result'></span></p>
+    <button type="button" id='sum'>提交</button>
+</form>
+
+
+<div id="dict">Ajax 加载字典</div>
+<p id="dict_result"></p>
+
+<div id="list">Ajax 加载列表</div>
+<p id="list_result"></p>
+
+
+<script src="http://apps.bdimg.com/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+      // 求和 a + b
+      $("#sum").click(function(){
+        var a = $("#a").val();
+        var b = $("#b").val();
+
+        $.get("/add/",{'a':a,'b':b}, function(ret){
+            $('#result').html(ret);
+        })
+      });
+
+
+    });
+</script>
+</body>
+</html>
+

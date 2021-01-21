@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}deploy{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/css/bootstrap-dialog.min.css">
+
+{% endblock %}
+
+{% block breadcrumb %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        部署
+        <small>deploy</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+        <li class="active">部署</li>
+      </ol>
+    </section>
+{% endblock %}
+
+{% block content %}
+
+    <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Horizontal Form</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" " action="addserver" method="post">
+                <div class="box-body">
+                  <div class="form-group">
+                      <label class="col-sm-2 control-label">公司名</label>
+                      <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="请输入公司名 ..." name="company">
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label class="col-sm-2 control-label">域名</label>
+                      <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="请输入域名 ..." name="domain">
+                      </div>
+                  </div>
+
+                <div class="form-group">
+                  <label for="serverip" class="col-sm-2 control-label">服务器ip</label>
+
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="serverip" placeholder="请输入服务器ip" name="serverip">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="Password" class="col-sm-2 control-label">服务器密码</label>
+
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="Password" placeholder="Password" name="password">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="region" class="col-sm-2 control-label">区域</label>
+
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="region" placeholder="山西" name="region">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <div class="checkbox">
+                <button type="button" class="btn btn-info " data-toggle="modal" data-target="#modal-info" id="mytest111">检测域名解析</button>
+                <button type="button" class="btn btn-info " data-toggle="modal" data-target="#modal-info">检测22端口</button>
+                <button type="button" class="btn btn-info " data-toggle="modal" data-target="#modal-info">检测用户密码</button>
+                <button type="button" class="btn btn-info " data-toggle="modal" data-target="#modal-info">检测443端口</button>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="submit" class="btn btn-info pull-right">添加</button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+
+
+<div class="modal modal-info fade" id="modal-info">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Info Modal</h4>
+              </div>
+              <div class="modal-body">
+                <p>待开发;</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline">Save changes</button>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>
+
+
+
+
+{% endblock %}
+
+{% block script %}
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/js/bootstrap-dialog.min.js"></script>
+
+<script>
+
+$('#mytest').on('click',function(){
+        var url = "/deploy/mytest";
+        var title = 'JumpServer命令统计';
+        $.ajax({url:url,
+                success:function(data){
+                    var tag = $('<div style="height: 500px;overflow: auto;background-color: rgba(0, 0, 0, 0);"></div>').html(data);
+                    BootstrapDialog.show({title: title, message:tag});
+                    //alert(data[0])
+                    console.log(data)
+        }});
+       return false;
+    });
+</script>
+{% endblock %}

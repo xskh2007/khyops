@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/deploy/temp/celestia-customer-www" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/chewancheng.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/cjwy56.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/htgylgl.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/quandoutong.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/rongzewulian.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/sxhh56.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/sxhuasheng56.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/sxlgwy.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/sxrdwlkj.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/sxslwlyxgs.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/xywlkjgs.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deploy/temp/ytzhkj56.com" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/temp/celestia-customer-www" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/temp/chewancheng.com" vcs="Git" />
+  </component>
+</project>
