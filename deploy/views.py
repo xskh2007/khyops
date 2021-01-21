@@ -54,7 +54,7 @@ def deploy(request):
         proxy_domain = "kuaihuoyun.com"
     res=onekeydeploy.delay(host=host,domain=domain,password=password,company=company,proxy_domain=proxy_domain)
     # res=add.delay(3,5)
-    # print(res,"mmmmm")
+    print(res,"mmmmmmmmmmmmmmmmmmmm")
     return HttpResponse("网站部署中,请稍等片刻查看部署状态...")
 
 

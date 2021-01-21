@@ -38,7 +38,7 @@ def onekeydeploy(host="",domain="",password="",company="",proxy_domain=""):
     br='master'
     icpurl='http://5ff2d1dd84d6b.icp.jinsan168.com/t/5ff2d1dd84d6b'
     print("sh "+deploypath+"./init.sh "+domain+br+proxy_domain+company+icpurl)
-    res=os.popen("sh "+deploypath+"./init.sh "+domain+" "+br+" "+proxy_domain+" "+company+" "+icpurl).readlines()
+    res=os.popen("sh "+deploypath+"/init.sh "+domain+" "+br+" "+proxy_domain+" "+company+" "+icpurl).readlines()
 
 
     #scp install-nginx.sh

@@ -6,7 +6,7 @@ You have 15 unapplied migration(s). Your project may not work properly until you
 pip install
 django==2.1.8
 ansible==2.3.1.0
-
+mysqlclient
 celery==5.0.5
 django-celery-results==2.0.1
 redis==3.2.0
@@ -17,6 +17,7 @@ celery -A khyops worker -l INFO -P eventlet
 
   475  pip uninstall django-celery-results
   476  pip install django-celery-results
+  $ pip install django-celery-beat django-celery-results redis
   500  yum install redis
   502  service redis start
 
@@ -62,3 +63,5 @@ current_process()._config = {'semprefix': '/mp'}
 from multiprocessing import current_process
 
 export PYTHONOPTIMIZE=1 && celery -A khyops worker -l DEBUG
+
+celery -A khyops beat -l info -S django
