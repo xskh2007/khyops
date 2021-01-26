@@ -1,9 +1,14 @@
 You have 15 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
 
+   93  yum localinstall http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+   94  yum install mysql-community-server mysql-devel -y
+  130  systemctl start mysqld.service
+  131  mysql -uroot -p
 
 
 
 pip install
+django-celery-beat==2.2.0
 django==2.1.8
 ansible==2.3.1.0
 mysqlclient
