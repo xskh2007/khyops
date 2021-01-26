@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'khyops.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'khyops',
-        'USER': 'root',
-        'PASSWORD': 'password',
-        'HOST': '127.0.0.1',
+        'NAME': 'khyopsdev',
+        'USER': 'khyops',
+        'PASSWORD': '123456',
+        'HOST': '192.168.6.111',
         'PORT': '3306',
     }
 }

@@ -10,7 +10,7 @@ mysqlclient
 celery==5.0.5
 django-celery-results==2.0.1
 redis==3.2.0
-eventlet
+#eventlet
 
 
 celery -A khyops worker -l INFO -P eventlet
