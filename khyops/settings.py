@@ -133,7 +133,7 @@ STATICFILES_DIRS = [
 
 
 CELERY_RESULT_BACKEND = 'django-db'
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://192.168.6.111:6379/1'
 CELERY_IMPORTS = ['deploy.task']
 force = True  # 很重要，没有的话不会加载settin.py中的部分配置
 CELERYD_ACKS_LATE = True  # 设置失败允许重试

@@ -9,11 +9,13 @@ from ansible.playbook.play import Play
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.plugins.callback import CallbackBase
 from ansible import constants as C
+import logging
 
 
 
 class Exec():
-    def __init__(self,host='',host_list='',username='root',password='',**kwargs):
+    def __init__(self,playname='',host='',host_list='',username='root',password='',**kwargs):
+        self.playname=playname
         self.host = host
         self.host_list=host_list
         self.username = username
@@ -28,13 +30,59 @@ class Exec():
 
         更多callback函数定义，见plugins/callback/__init__.py
         """
-        def v2_runner_on_ok(self, result, **kwargs):
-          """Print a json representation of the result
+        # def v2_runner_on_ok(self, result, **kwargs):
+        #   """Print a json representation of the result
+        #
+        #   This method could store the result in an instance attribute for retrieval later
+        #   """
+        #   host = result._host
+        #   print (json.dumps({host.name: result._result}, indent=4))
+        #
+        # def v2_runner_on_unreachable(self, result):
+        #     host = result._host.get_name()
+        #     print(json.dumps({host: result._result}, indent=4))
 
-          This method could store the result in an instance attribute for retrieval later
-          """
-          host = result._host
-          print (json.dumps({host.name: result._result}, indent=4))
+        def _get_return_data(self, result):
+            try:
+                if result.get('msg', None):
+                    return_data = result.get('msg')
+                elif result.get('stderr', None):
+                    return_data = result.get('stderr')
+                else:
+                    return_data = result
+            except:
+                pass
+            return return_data.encode('utf-8')
+
+        def v2_runner_on_ok(self, result):
+            host = result._host.get_name()
+            self.runner_on_ok(host, result._result)
+            print(json.dumps({host: result._result}, indent=4))
+            # return_data = self._get_return_data(result._result)
+            # print(return_data)
+            # logging.warning('===v2_runner_on_ok====host=%s===result=%s' % (host, return_data))
+
+        def v2_runner_on_failed(self, result, ignore_errors=False):
+            host = result._host.get_name()
+            # self.runner_on_failed(host, result._result, ignore_errors)
+            print(json.dumps({host: result._result}, indent=4))
+            # return_data = self._get_return_data(result._result)
+            # logging.warning('===v2_runner_on_failed====host=%s===result=%s' % (host, return_data))
+
+        def v2_runner_on_unreachable(self, result):
+            host = result._host.get_name()
+            print(json.dumps({host: result._result}, indent=4))
+            # self.runner_on_unreachable(host, result._result)
+            # return_data = self._get_return_data(result._result)
+            # logging.warning('===v2_runner_on_unreachable====host=%s===result=%s' % (host, return_data))
+
+        def v2_runner_on_skipped(self, result):
+            if C.DISPLAY_SKIPPED_HOSTS:
+                host = result._host.get_name()
+                print(json.dumps({host: result._result}, indent=4))
+                # self.runner_on_skipped(host, self._get_item(getattr(result._result, 'results', {})))
+                # logging.warning("this task does not execute,please check parameter or condition.")
+
 
     def myexec(self):
         # 设置需要初始化的ansible配置参数
@@ -59,7 +107,7 @@ class Exec():
 
         # create play with tasks
         play_source =  dict(
-            name = "Ansible Play",
+            name = self.playname,
             hosts = self.host,   # 这里指定all
             gather_facts = 'no',
             tasks = [
@@ -68,7 +116,7 @@ class Exec():
                 ]
           )
         play = Play().load(play_source, variable_manager=variable_manager, loader=loader)
-        # print(play,"1111111111111111111")
+        print(play)
 
         # actually run it
         tqm = None
@@ -81,11 +129,11 @@ class Exec():
                     passwords=passwords,
                     stdout_callback=results_callback,  # Use our custom   callback instead of the ``default`` callback plugin
               )
-            result = tqm.run(play)
-            print(result,"2222222222222222")
+            res=tqm.run(play)
+            return res
+            # print(result,"2222222222222222")
             # print(tqm,"3333333333333333")
-            # tqm.run(play)
-            # print("444444444444")
+            # print(type(tqm.RUN_OK))
         except Exception as exc:
             raise TaskExecutionException(str(exc))
         finally:
@@ -96,51 +144,19 @@ if __name__ == '__main__':
 
     import os
 
-    host='114.55.95.218'
-    domain='zizwl.com'
-    password='Cz@#3143'
-    company='贵州紫竹物联科技有限公司'
-
-    br='master'
-    proxy_domain='56fanyun.com'
-    icpurl='http://5ff2d1dd84d6b.icp.jinsan168.com/t/5ff2d1dd84d6b'
-    print("sh ./init.sh "+domain+br+proxy_domain+company+icpurl)
-    res=os.popen("sh ./init.sh "+domain+" "+br+" "+proxy_domain+" "+company+" "+icpurl).readlines()
-
-    host_list=['114.55.95.218','47.110.237.105','114.55.92.133','121.196.161.244','47.111.73.139','114.55.92.133','116.62.5.139','47.111.124.102','101.37.80.103','101.37.174.36','47.98.205.95','121.196.42.77','118.31.174.61','101.37.28.13','47.111.89.243']
+    # host='101.37.204.163'
+    # password='zhzy56.com'
+    host='192.168.6.112'
+    password='123456'
+    host_list=['192.168.6.112','101.37.204.163','47.110.237.105','114.55.92.133','121.196.161.244','47.111.73.139','114.55.92.133','116.62.5.139','47.111.124.102','101.37.80.103','101.37.174.36','47.98.205.95','121.196.42.77','118.31.174.61','101.37.28.13','47.111.89.243']
     username='root'
-    args="src=./temp/%s dest=/var/www/"%(domain)
-    print(args,"ggggggggggggggggggggggggggggggg")
-    #dict(module='copy', args='src=/root/OpsManage-3.zip dest=/var/www/')
 
-    #scp install-nginx.sh
-    installnginxargs='src=./install-nginx.sh dest=/root/'
-    copyinstallnginx=Exec(host=host,host_list=host_list,username='root',password=password,module='copy', args=installnginxargs)
-    copyinstallnginx.myexec()
+    # #scp install-nginx.sh
+    # installnginxargs='src=./install-nginx.sh dest=/root/'
+    # copyinstallnginx=Exec(host=host,host_list=host_list,username='root',password=password,module='copy', args=installnginxargs)
+    # copyinstallnginx.myexec()
 
     # installnginx
-    installnginx=Exec(host=host,host_list=host_list,username='root',password=password,module='shell', args='sh /root/install-nginx.sh')
-    installnginx.myexec()
-
-    configurenginxargs='src=./temp/%s/nginx-wlhy.conf dest=/etc/nginx/sites-enabled/'%(domain)
-    print(domain,configurenginxargs,"-----------------")
-    configurengin = Exec(host=host, host_list=host_list, username='root', password=password, module='copy', args=configurenginxargs)
-    configurengin.myexec()
-
-    acmeargs='src=./pack/acme.sh.tar.gz dest=/root/'
-    copyacme=Exec(host=host,host_list=host_list,username='root',password=password,module='copy', args=acmeargs)
-    copyacme.myexec()
-
-    installacmeargs='src=./pack/installacme.sh dest=/root/'
-    copyacme=Exec(host=host,host_list=host_list,username='root',password=password,module='copy', args=installacmeargs)
-    copyacme.myexec()
-
-    installacme=Exec(host=host,host_list=host_list,username='root',password=password,module='shell', args='bash /root/installacme.sh %s'%(domain))
-    installacme.myexec()
-
-    #scp index.html
-    print ("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
-    scpindexxargs='src=./temp/%s/ dest=/var/www/html/'%(domain)
-    print(scpindexxargs,"-----------------")
-    scpindex = Exec(host=host, host_list=host_list, username='root', password=password, module='copy', args=scpindexxargs)
-    scpindex.myexec()
+    installnginx=Exec(playname='installnginx',host=host,host_list=host_list,username='root',password=password,module='shell', args='free -m')
+    res=installnginx.myexec()
+    print(res)

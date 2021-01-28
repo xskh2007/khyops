@@ -26,9 +26,10 @@ def addserver(request):
             region = "山西"
         else:
             region = request.POST["region"]
+        icpurl = request.POST["icpurl"]
 
         # print username, password, email, address, cards, numbers
-        models.Servers.objects.create(company=company,domain=domain,ip=serverip,password=password,region=region)
+        models.Servers.objects.create(company=company,domain=domain,ip=serverip,password=password,region=region,icpurl=icpurl)
         # models.User.objects.create(user_name=username, user_password=password, user_email=email, user_address=address,
                                    # user_cards=cards, user_numbers=numbers)
         return redirect('/deploy/')
@@ -40,6 +41,8 @@ def addserver(request):
 
 
 def deploy(request):
+    # from multiprocessing import current_process
+    # current_process()._config = {'semprefix': '/mp'}
     # ip = request.POST["ip"]
     # host_list=models.Servers.objects.values_list("ip", "47.111.73.139")
     #host_list=list(models.Servers.objects.values_list('ip', flat=True))

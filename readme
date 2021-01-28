@@ -65,3 +65,11 @@ from multiprocessing import current_process
 export PYTHONOPTIMIZE=1 && celery -A khyops worker -l DEBUG
 
 celery -A khyops beat -l info -S django
+
+
+
+
+1. 在控制主机上安装epel源
+yum install -y epel-release
+2.使用yum命令安装Ansible
+yum install -y ansible
