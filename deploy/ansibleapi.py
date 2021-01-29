@@ -131,9 +131,7 @@ class Exec():
               )
             res=tqm.run(play)
             return res
-            # print(result,"2222222222222222")
-            # print(tqm,"3333333333333333")
-            # print(type(tqm.RUN_OK))
+
         except Exception as exc:
             raise TaskExecutionException(str(exc))
         finally:

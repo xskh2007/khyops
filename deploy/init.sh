@@ -17,9 +17,10 @@ rm -rf temp/$domain
 #echo "git clone over++++++++++"
 
 #\cp -r temp/celestia-customer-www temp/$domain
-mkdir -p temp/$domain
+
 basedir=`cd $(dirname $0); pwd -P`
-sed "s/__DOMAIN__/$domain/g;s/__PROXY_DOMAIN__/$proxy_domain/g" ${basedir}/nginx-wlhy.conf > temp/$domain/nginx-wlhy.conf
-cat ${basedir}/pack/init_index.html | sed "s@__COMPANY__@$company@;s@__WWW__@$icpurl@;" > temp/$domain/index.html
+mkdir -p ${basedir}/temp/$domain
+sed "s/__DOMAIN__/$domain/g;s/__PROXY_DOMAIN__/$proxy_domain/g" ${basedir}/nginx-wlhy.conf > ${basedir}/temp/$domain/nginx-wlhy.conf
+cat ${basedir}/pack/init_index.html | sed "s@__COMPANY__@$company@;s@__WWW__@$icpurl@;" > ${basedir}/temp/$domain/index.html
 #\cp install-nginx.sh temp/$domain/
 
