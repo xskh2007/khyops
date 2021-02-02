@@ -39,8 +39,8 @@
             <table id="assets_table" class="table table-bordered table-striped">
                 <thead>
                     <tr>
+                        <th>id</th>
                         <th>公司名</th>
-                        <th>服务器名</th>
                         <th>域名</th>
                         <th>ip</th>
                         <th>密码</th>
@@ -56,8 +56,8 @@
                 {% for asset in assets %}
 
                     <tr>
+                        <td>{{ asset.id }}</td>
                         <td>{{ asset.company }}</td>
-                        <td>{{ asset.servername }}</td>
                         <td>{{ asset.domain }}</td>
                         <td id="ip">{{ asset.ip }}</td>
                         <td>{{ asset.password }}</td>
@@ -74,8 +74,8 @@
                 </tbody>
                 <tfoot>
                     <tr>
+                        <th>id</th>
                         <th>公司名</th>
-                        <th>服务器名</th>
                         <th>域名</th>
                         <th>ip</th>
                         <th>密码</th>

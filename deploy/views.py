@@ -3,6 +3,7 @@ from deploy import models
 from django.shortcuts import redirect
 from django.http import JsonResponse,HttpResponse
 from .ansibleapi import Exec
+from .newansibleapi import Exec as NewExec
 from .task import *
 
 
@@ -60,6 +61,40 @@ def deploy(request):
     print(res,"mmmmmmmmmmmmmmmmmmmm")
     return HttpResponse("网站部署中,请稍等片刻查看部署状态...")
 
+
+def checkping(request):
+    host=request.POST["ip"]
+    print(host)
+    password=models.Servers.objects.get(ip=host).password
+    domain=models.Servers.objects.get(ip=host).domain
+    host_list=list(models.Servers.objects.values_list('ip', flat=True))
+    checkping = NewExec(playname='checkping', host=host, host_list=host_list, username='root', password=password,
+                        module='shell', args='ping %s -c 3'%(domain))
+    res = checkping.myexec()
+    print(res["stdout"])
+    return HttpResponse(res["stdout"].replace("\n","<br>"))
+
+
+def checkport443(request):
+    host=request.POST["ip"]
+    import socket;
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = sock.connect_ex((host,443))
+    if result == 0:
+       return HttpResponse("443 is ok")
+    else:
+       return HttpResponse("443 is Not ok")
+
+
+def checkport22(request):
+    host=request.POST["ip"]
+    import socket;
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = sock.connect_ex((host,22))
+    if result == 0:
+       return HttpResponse("22 is ok")
+    else:
+       return HttpResponse("22 is Not ok")
 
 def mytest(request):
     name_dict = {'twz': 'Love python and Django', 'zqxt': 'I am teaching Django'}

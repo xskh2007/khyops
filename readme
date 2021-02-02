@@ -73,3 +73,8 @@ celery -A khyops beat -l info -S django
 yum install -y epel-release
 2.使用yum命令安装Ansible
 yum install -y ansible
+
+
+
+#需求 列表页超链接 直接访问看效果
+各种检测

@@ -21,69 +21,40 @@ class Exec():
         self.username = username
         self.password = password
         self.action = dict(kwargs)
-    class ResultCallback(CallbackBase):
-        """A sample callback plugin used for performing an action as results come in
 
-        If you want to collect all results into a single object for processing at
-        the end of the execution, look into utilizing the ``json`` callback plugin
-        or writing your own custom callback plugin
-
-        更多callback函数定义，见plugins/callback/__init__.py
+    class MyCallbackBase(CallbackBase):
         """
-        # def v2_runner_on_ok(self, result, **kwargs):
-        #   """Print a json representation of the result
-        #
-        #   This method could store the result in an instance attribute for retrieval later
-        #   """
-        #   host = result._host
-        #   print (json.dumps({host.name: result._result}, indent=4))
-        #
-        # def v2_runner_on_unreachable(self, result):
-        #     host = result._host.get_name()
-        #     print(json.dumps({host: result._result}, indent=4))
+        通过api调用ac-hoc的时候输出结果很多时候不是很明确或者说不是我们想要的结果，主要它还是输出到STDOUT，而且通常我们是在工程里面执行
+        这时候就需要后台的结果前端可以解析，正常的API调用输出前端很难解析。 对比之前的执行 adhoc()查看区别。
+        为了实现这个目的就需要重写CallbackBase类，需要重写下面三个方法
+        """
 
-        def _get_return_data(self, result):
-            try:
-                if result.get('msg', None):
-                    return_data = result.get('msg')
-                elif result.get('stderr', None):
-                    return_data = result.get('stderr')
-                else:
-                    return_data = result
-            except:
-                pass
-            return return_data.encode('utf-8')
-
-        def v2_runner_on_ok(self, result):
-            host = result._host.get_name()
-            self.runner_on_ok(host, result._result)
-            print(json.dumps({host: result._result}, indent=4))
-            # return "11111"
-            # return_data = self._get_return_data(result._result)
-            # print(return_data)
-            # logging.warning('===v2_runner_on_ok====host=%s===result=%s' % (host, return_data))
-
-        def v2_runner_on_failed(self, result, ignore_errors=False):
-            host = result._host.get_name()
-            # self.runner_on_failed(host, result._result, ignore_errors)
-            print(json.dumps({host: result._result}, indent=4))
-            # return_data = self._get_return_data(result._result)
-            # logging.warning('===v2_runner_on_failed====host=%s===result=%s' % (host, return_data))
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)  # python3中重载父类构造方法的方式，在Python2中写法会有区别。
+            self.host_ok = {}
+            self.host_unreachable = {}
+            self.host_failed = {}
 
         def v2_runner_on_unreachable(self, result):
-            host = result._host.get_name()
-            print(json.dumps({host: result._result}, indent=4))
-            # self.runner_on_unreachable(host, result._result)
-            # return_data = self._get_return_data(result._result)
-            # logging.warning('===v2_runner_on_unreachable====host=%s===result=%s' % (host, return_data))
+            """
+            重写 unreachable 状态
+            :param result:  这是父类里面一个对象，这个对象可以获取执行任务信息
+            """
+            self.host_unreachable[result._host.get_name()] = result
 
-        def v2_runner_on_skipped(self, result):
-            if C.DISPLAY_SKIPPED_HOSTS:
-                host = result._host.get_name()
-                print(json.dumps({host: result._result}, indent=4))
-                # self.runner_on_skipped(host, self._get_item(getattr(result._result, 'results', {})))
-                # logging.warning("this task does not execute,please check parameter or condition.")
+        def v2_runner_on_ok(self, result, *args, **kwargs):
+            """
+            重写 ok 状态
+            :param result:
+            """
+            self.host_ok[result._host.get_name()] = result
 
+        def v2_runner_on_failed(self, result, *args, **kwargs):
+            """
+            重写 failed 状态
+            :param result:
+            """
+            self.host_failed[result._host.get_name()] = result
 
     def myexec(self):
         # 设置需要初始化的ansible配置参数
@@ -97,7 +68,7 @@ class Exec():
         passwords = None
 
         # Instantiate our ResultCallback for handling results as they come in
-        results_callback = self.ResultCallback()
+        mycallback = self.MyCallbackBase()
         # ssh连接采用password认证
         variable_manager.extra_vars={"ansible_user": self.username, "ansible_ssh_pass": self.password}
         # 初始化inventory， host_list后面可以是列表或inventory文件
@@ -128,10 +99,26 @@ class Exec():
                     loader=loader,
                     options=options,
                     passwords=passwords,
-                    stdout_callback=results_callback,  # Use our custom   callback instead of the ``default`` callback plugin
+                    stdout_callback=mycallback,  # Use our custom   callback instead of the ``default`` callback plugin
               )
             res=tqm.run(play)
-            return res
+            # print(mycallback.host_ok.items())
+            result_raw = {"success": {}, "failed": {}, "unreachable": {}}
+            # 如果成功那么  mycallback.host_ok.items() 才可以遍历，上面的任务肯定能成功所以我们就直接遍历这个
+            for host, result in mycallback.host_ok.items():
+                result_raw["success"][host] = result._result
+                return result_raw["success"][host]
+
+            for host, result in mycallback.host_failed.items():
+                result_raw["failed"][host] = result._result
+                return result_raw["failed"][host]
+
+            for host, result in mycallback.host_unreachable.items():
+                result_raw["unreachable"][host] = result._result
+                return result_raw["unreachable"][host]
+
+            # print(result_raw)
+            # return result_raw
 
         except Exception as exc:
             raise TaskExecutionException(str(exc))
@@ -163,3 +150,4 @@ if __name__ == '__main__':
     test = Exec(playname='test', host=host, host_list=host_list, username='root', password=password,
                         module='shell', args='ping www.baidu.com -c 3')
     res = test.myexec()
+    print(res["stdout"])
