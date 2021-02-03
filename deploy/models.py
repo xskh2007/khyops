@@ -5,6 +5,7 @@ import uuid
 
 # Create your models here.
 class Servers(models.Model):
+
     id=models.AutoField(primary_key=True)
     company = models.CharField(default='',max_length=200)
     domain = models.CharField(default='',max_length=200)
@@ -14,8 +15,16 @@ class Servers(models.Model):
     region = models.CharField(default='root',max_length=200)
     servername = models.UUIDField(default=uuid.uuid4, editable=False)
     icpurl=models.CharField(default='',max_length=200)
+    deploymodel=models.IntegerField(choices=((0, '整站部署'),
+                                              (1, '部署index')),
+                                     default=0,
+                                     verbose_name='部署方式')
     sitetitle = models.CharField(default='',max_length=200)
-    deploystatus=models.IntegerField(default='0')
+    deploystatus=models.IntegerField(choices=((0, '待部署'),
+                                              (1, '已部署'),
+                                              (2, '部署失败')),
+                                     default=0,
+                                     verbose_name='部署状态')
     deploytime=models.DateTimeField('保存日期',default = timezone.now)
 
     def __str__(self):

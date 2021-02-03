@@ -33,14 +33,24 @@
                   <div class="form-group">
                       <label class="col-sm-2 control-label">公司名</label>
                       <div class="col-sm-10">
-                            <input type="text" class="form-control" placeholder="请输入公司名 ..." name="company">
+                            <input type="text" class="form-control" placeholder="请输入公司名 ..." name="company"
+                                    data-bv-message="The company is not valid"
+                                    required
+                                    data-bv-notempty-message="The company is required and cannot be empty"
+                                    pattern="[a-zA-Z0-9]+"
+                                    data-bv-regexp-message="The company can only consist of alphabetical, number">
                       </div>
                   </div>
 
                   <div class="form-group">
                       <label class="col-sm-2 control-label">域名</label>
                       <div class="col-sm-10">
-                            <input type="text" class="form-control" placeholder="请输入域名 ..." name="domain">
+                            <input type="text" class="form-control" placeholder="请输入域名 ..." id="domain" name="domain"
+                            data-bv-message="The domain is not valid"
+                                    required
+                                    data-bv-notempty-message="The domain is required and cannot be empty"
+                                    pattern="[a-zA-Z0-9]+"
+                                    data-bv-regexp-message="The domain can only consist of alphabetical, number">
                       </div>
                   </div>
 
@@ -56,7 +66,7 @@
                   <label for="Password" class="col-sm-2 control-label">服务器密码</label>
 
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="Password" placeholder="Password" name="password">
+                    <input type="text" class="form-control" id="password" placeholder="Password" name="password">
                   </div>
                 </div>
                 <div class="form-group">
@@ -74,6 +84,20 @@
                     <input type="text" class="form-control" id="icpurl" placeholder="可选填" name="icpurl">
                   </div>
                 </div>
+
+
+    <div class="form-group">
+    <label for="email" class="col-sm-2 control-label">部署方式</label>
+    <div class="col-sm-2">
+    	<!-- 样式1 -->
+		<select class="form-control" id="deploymodel" name="deploymodel">
+			<option value="0">正站部署</option>
+			<option value="1">部署index</option>
+		</select>
+    </div>
+    <div class="col-sm-2 tips"></div>
+</div>
+
 
                 <div class="form-group">
                   <div class="col-sm-offset-2 col-sm-10">
@@ -129,15 +153,44 @@
 
 
 <script>
-
+/**
+$(function () {
+        $('form').bootstrapValidator({
+　　　　　　　　message: 'This value is not valid',            　
+            feedbackIcons: {                　　　　　　　　
+                valid: 'glyphicon glyphicon-ok',                　　　　　　　　
+                invalid: 'glyphicon glyphicon-remove',                　　　　　　　　
+                validating: 'glyphicon glyphicon-refresh'            　　　　　　　　   },
+            fields: {
+                company: {
+                    message: 'company验证失败',
+                    validators: {
+                        notEmpty: {
+                            message: 'company不能为空'
+                        }
+                    }
+                },
+                domain: {
+                    validators: {
+                        notEmpty: {
+                            message: 'domain不能为空'
+                        }
+                    }
+                }
+            }
+        });
+    });
+*/
 $('.checkping').on('click',function(){
         //var ip = $(this).closest('tr').find('#ip').text();
         var ip=$(this).parent().parent().parent().parent().find('#serverip').val();
+        var domain=$(this).parent().parent().parent().parent().find('#domain').val();
+        var password=$(this).parent().parent().parent().parent().find('#password').val();
         var url = "/deploy/checkping";
         var title = 'ping信息';
         $.ajax({url:url,
                 type: 'POST',
-                data: {"ip":ip},
+                data: {"ip":ip,"domain":domain,"password":password},
                 success:function(data){
                     var tag = $('<div style="height: 500px;overflow: auto;background-color: rgba(0, 0, 0, 0);"></div>').html(data.replace(/\n/g,"<br />"));
                     BootstrapDialog.show({title: title, message:tag[0]});

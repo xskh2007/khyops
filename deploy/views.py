@@ -23,6 +23,8 @@ def addserver(request):
         domain = request.POST["domain"]
         serverip = request.POST["serverip"]
         password = request.POST["password"]
+        deploymodel=request.POST["deploymodel"]
+        print(deploymodel)
         if request.POST["region"].strip()=="" or request.POST["region"]==None:
             region = "山西"
         else:
@@ -30,7 +32,8 @@ def addserver(request):
         icpurl = request.POST["icpurl"]
 
         # print username, password, email, address, cards, numbers
-        models.Servers.objects.create(company=company,domain=domain,ip=serverip,password=password,region=region,icpurl=icpurl)
+        models.Servers.objects.create(company=company,domain=domain,ip=serverip,password=password,region=region,icpurl=icpurl,
+                                      deploymodel=deploymodel)
         # models.User.objects.create(user_name=username, user_password=password, user_email=email, user_address=address,
                                    # user_cards=cards, user_numbers=numbers)
         return redirect('/deploy/')
@@ -52,26 +55,33 @@ def deploy(request):
     domain=models.Servers.objects.get(ip=host).domain
     password=models.Servers.objects.get(ip=host).password
     region=models.Servers.objects.get(ip=host).region
+    deploymodel=models.Servers.objects.get(ip=host).deploymodel
     if region=="贵州":
         proxy_domain="56fanyun.com"
     else:
         proxy_domain = "kuaihuoyun.com"
-    res=onekeydeploy.delay(host=host,domain=domain,password=password,company=company,proxy_domain=proxy_domain)
+    res=onekeydeploy.delay(host=host,domain=domain,password=password,company=company,proxy_domain=proxy_domain,deploymodel=deploymodel)
     # res=add.delay(3,5)
     print(res,"mmmmmmmmmmmmmmmmmmmm")
     return HttpResponse("网站部署中,请稍等片刻查看部署状态...")
 
 
 def checkping(request):
+    print(request.POST)
     host=request.POST["ip"]
-    print(host)
-    password=models.Servers.objects.get(ip=host).password
-    domain=models.Servers.objects.get(ip=host).domain
-    host_list=list(models.Servers.objects.values_list('ip', flat=True))
+    # password=models.Servers.objects.get(ip=host).password
+    # domain=models.Servers.objects.get(ip=host).domain
+    # host_list=list(models.Servers.objects.values_list('ip', flat=True))
+    # host_list=list(models.Servers.objects.values_list('ip', flat=True))
+    password=request.POST["password"]
+    domain=request.POST["domain"]
+    host_list=[host]
+    print(host,host_list,password,domain)
     checkping = NewExec(playname='checkping', host=host, host_list=host_list, username='root', password=password,
                         module='shell', args='ping %s -c 3'%(domain))
     res = checkping.myexec()
-    print(res["stdout"])
+    # print(res["stdout"])
+    print(res)
     return HttpResponse(res["stdout"].replace("\n","<br>"))
 
 

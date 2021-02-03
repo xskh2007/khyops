@@ -23,6 +23,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         apply the skin class to the body tag so the changes take effect. -->
   <link rel="stylesheet" href="{% static 'adminlet-2.4.10/dist/css/skins/skin-blue.min.css' %}">
 
+  <link rel="stylesheet" href="{% static 'css/bootstrapValidator.css' %}">
+
 
 
     {% block css %}{% endblock %}
@@ -301,6 +303,7 @@ desired effect
 <!-- AdminLTE App -->
 <script src="{% static 'adminlet-2.4.10/dist/js/adminlte.min.js' %}"></script>
 
+<script src="{% static 'js/bootstrapValidator.js' %}"></script>
 
 
 {% block script %}{% endblock %}
