@@ -48,9 +48,7 @@
                             <input type="text" class="form-control" placeholder="请输入域名 ..." id="domain" name="domain"
                             data-bv-message="The domain is not valid"
                                     required
-                                    data-bv-notempty-message="The domain is required and cannot be empty"
-                                    pattern="[a-zA-Z0-9]+"
-                                    data-bv-regexp-message="The domain can only consist of alphabetical, number">
+                                    data-bv-notempty-message="The domain is required and cannot be empty">
                       </div>
                   </div>
 
@@ -58,7 +56,10 @@
                   <label for="serverip" class="col-sm-2 control-label">服务器ip</label>
 
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="serverip" placeholder="请输入服务器ip" name="serverip">
+                    <input type="text" class="form-control" id="serverip" placeholder="请输入服务器ip" name="serverip"
+                                    data-bv-message="The domain is not valid"
+                                    required
+                                    data-bv-notempty-message="The domain is required and cannot be empty">
                   </div>
                 </div>
 
@@ -66,7 +67,12 @@
                   <label for="Password" class="col-sm-2 control-label">服务器密码</label>
 
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="password" placeholder="Password" name="password">
+                    <input type="text" class="form-control" id="password" placeholder="Password" name="password"
+                                    data-bv-message="The domain is not valid"
+                                    required
+                                    data-bv-notempty-message="The domain is required and cannot be empty"
+                                    pattern="[a-zA-Z0-9]+"
+                                    data-bv-regexp-message="The domain can only consist of alphabetical, number">
                   </div>
                 </div>
                 <div class="form-group">
