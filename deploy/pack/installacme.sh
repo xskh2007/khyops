@@ -5,6 +5,15 @@ cd /root/acme.sh
 echo 'alias acme.sh=~/.acme.sh/acme.sh' >>/etc/profile
 source /etc/profile
 
+myFile="/etc/nginx/sites-available/default"
+
+if [ ! -f "$myFile" ]; then
+    \cp /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+fi
+
+/usr/sbin/nginx -s reload
+
+
 domain=$1
 /root/.acme.sh/acme.sh --issue -d www.$domain --webroot /var/www/html --force
 /root/.acme.sh/acme.sh --issue -d wlhy.$domain --webroot /var/www/html --force
