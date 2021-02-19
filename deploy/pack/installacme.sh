@@ -5,13 +5,13 @@ cd /root/acme.sh
 echo 'alias acme.sh=~/.acme.sh/acme.sh' >>/etc/profile
 source /etc/profile
 
-myFile="/etc/nginx/sites-available/default"
+myFile="etc/nginx/sites-enabled/default"
 
 if [ ! -f "$myFile" ]; then
     \cp /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 fi
-
 /usr/sbin/nginx -s reload
+rm -f /etc/nginx/sites-enabled/default
 
 
 domain=$1
