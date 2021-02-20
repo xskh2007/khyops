@@ -56,11 +56,12 @@ def deploy(request):
     password=models.Servers.objects.get(ip=host).password
     region=models.Servers.objects.get(ip=host).region
     deploymodel=models.Servers.objects.get(ip=host).deploymodel
+    icpurl=models.Servers.objects.get(ip=host).icpurl
     if region=="贵州":
         proxy_domain="56fanyun.com"
     else:
         proxy_domain = "kuaihuoyun.com"
-    res=onekeydeploy.delay(host=host,domain=domain,password=password,company=company,proxy_domain=proxy_domain,deploymodel=deploymodel)
+    res=onekeydeploy.delay(host=host,domain=domain,password=password,company=company,proxy_domain=proxy_domain,deploymodel=deploymodel,icpurl=icpurl)
     # res=add.delay(3,5)
     print(res,"mmmmmmmmmmmmmmmmmmmm")
     return HttpResponse("网站部署中,请稍等片刻,刷新页面查看部署状态...")
