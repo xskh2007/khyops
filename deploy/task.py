@@ -44,7 +44,12 @@ def onekeydeploy(host="",domain="",password="",company="",proxy_domain="",deploy
     # host_list=['192.168.6.40']
     host_list=list(Servers.objects.values_list('ip', flat=True))
     br='master'
-    icpurl='http://5ff2d1dd84d6b.icp.jinsan168.com/t/5ff2d1dd84d6b'
+    #icpurl='http://5ff2d1dd84d6b.icp.jinsan168.com/t/5ff2d1dd84d6b'
+    icpurl=Servers.objects.get(ip=host).icpurl
+    if len(icpurl)==0:
+        icpurl = 'http://5ff2d1dd84d6b.icp.jinsan168.com/t/5ff2d1dd84d6b'
+    else:
+        pass
     # res=os.popen("sh "+deploypath+"/init.sh "+domain+" "+br+" "+proxy_domain+" "+company+" "+icpurl).readlines()
 
     #生成nginx配置文件，替换icpurl
