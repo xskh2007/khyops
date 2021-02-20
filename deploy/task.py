@@ -50,7 +50,7 @@ def onekeydeploy(host="",domain="",password="",company="",proxy_domain="",deploy
     #生成nginx配置文件，替换icpurl
     cmd="sh "+deploypath+"/init.sh "+domain+" "+br+" "+proxy_domain+" "+company+" "+icpurl
     cmd_res=subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-    print(cmd_res[1],"res33333333333")
+    print(icpurl,cmd_res[1],"res33333333333")
     if len(cmd_res[1])==0:
         task_res["cmd_res"]="success"
         print("success")

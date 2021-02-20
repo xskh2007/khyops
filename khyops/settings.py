@@ -141,6 +141,8 @@ CELERYD_TASK_TIME_LIMIT = 12 * 30  # 单个任务的最大运行时间，超时�
 CELERYD_CONCURRENCY = 8  # 设置并发的worker数量
 
 
+CELERY_TIMEZONE = 'Asia/Shanghai'
+
 
 from celery.schedules import crontab
 
