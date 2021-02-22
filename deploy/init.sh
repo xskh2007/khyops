@@ -9,7 +9,7 @@ echo $1
 echo $2
 echo $3
 echo $4
-echo $5
+echo $5 >>/tmp/123
 
 #rm -rf temp/celestia-customer-www
 rm -rf temp/$domain

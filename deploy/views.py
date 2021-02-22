@@ -57,6 +57,7 @@ def deploy(request):
     region=models.Servers.objects.get(ip=host).region
     deploymodel=models.Servers.objects.get(ip=host).deploymodel
     icpurl=models.Servers.objects.get(ip=host).icpurl
+    print(icpurl,'ppppppppppppppppppppp')
     if region=="贵州":
         proxy_domain="56fanyun.com"
     else:
