@@ -129,7 +129,13 @@ def onekeydeploy(host="",domain="",password="",company="",proxy_domain="",deploy
         print("scpindex_res-------",scpindex_res)
     elif deploymodel==0:
         #拷贝整站
-        scpindexxargs="src=%s/temp/celestia-customer-www.tar.gz  dest=/var/www/html/ mode=0755 copy=yes"%(deploypath)
+        if proxy_domain="kuaihuoyun.com":
+            scpindexxargs = "src=%s/temp/celestia-customer-www-kuaihuoyun.tar.gz  dest=/var/www/html/ mode=0755 copy=yes" % (
+                deploypath)
+        elif proxy_domain="56fanyun.com":
+            scpindexxargs = "src=%s/temp/celestia-customer-www-common.tar.gz  dest=/var/www/html/ mode=0755 copy=yes" % (
+                deploypath)
+        # scpindexxargs="src=%s/temp/celestia-customer-www.tar.gz  dest=/var/www/html/ mode=0755 copy=yes"%(deploypath)
         scpindex = Exec(playname='scpindex',host=host, host_list=host_list, username=username, password=password, module='unarchive', args=scpindexxargs)
         scpindex_res=scpindex.myexec()
         if scpindex_res==0:
