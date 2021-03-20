@@ -10,6 +10,7 @@ myFile="etc/nginx/sites-enabled/default"
 if [ ! -f "$myFile" ]; then
     \cp /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 fi
+killall nginx
 /usr/sbin/nginx -s reload
 rm -f /etc/nginx/sites-enabled/default
 

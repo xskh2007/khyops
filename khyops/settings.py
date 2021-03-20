@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'deploy',
     'django_celery_results',
-    'django_celery_beat'
+    'django_celery_beat',
+    'django_webssh',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -51,6 +53,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+ASGI_APPLICATION = 'khyops.routing.application'
 
 ROOT_URLCONF = 'khyops.urls'
 
@@ -160,3 +165,7 @@ from celery.schedules import crontab
 #         # 'args': ()
 #     }
 # }
+
+
+
+TMP_DIR = os.path.join(BASE_DIR, 'tmp')

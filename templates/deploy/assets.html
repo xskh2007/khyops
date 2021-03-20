@@ -61,13 +61,16 @@
                         <td>{{ asset.company }}</td>
                         <td>{{ asset.domain }}</td>
                         <td id="ip">{{ asset.ip }}</td>
-                        <td>{{ asset.password }}</td>
+                        <td id="password">{{ asset.password }}</td>
                         <td>{{ asset.region }}</td>
                         <td>{{ asset.get_deploystatus_display }}</td>
                         <td>{{ asset.get_deploymodel_display }}</td>
                         <td>{{ asset.deploytime }}</td>
                         <td>
-                            <button type="button" class="btn btn-info action" data-toggle="modal" data-target="#modal-info">一键部署</button>
+                            <div>
+                                <button type="button" class="btn btn-info action" data-toggle="modal" data-target="#modal-info">部署</button>
+                                <button type="button" class="btn btn-info webssh">ssh</button>
+                            </div>
                         </td>
                     </tr>
 
@@ -140,6 +143,15 @@ $('.action').on('click',function(){
                     //alert(data[0])
                     console.log(data)
         }});
+       return false;
+    });
+
+$('.webssh').on('click',function(){
+        var ip = $(this).closest('tr').find('#ip').text();
+        var password = $(this).closest('tr').find('#password').text();
+        alert(ip)
+        window.location.href=window.location.protocol+"//"+window.location.host+"/webssh"+"?ip="+ip+"&password="+password;
+
        return false;
     });
 </script>
