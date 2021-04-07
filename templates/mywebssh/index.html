@@ -1,0 +1,37 @@
+<html>
+<head>
+  <link rel="stylesheet" href="/static/xterm/xterm.css" />
+  <script src="/static/xterm/xterm.js"></script>
+    <script src="/static/jquery.min.js"></script>
+</head>
+<body>
+<input type="button" value="执行命令" onclick="show()">
+  <div id="terminal"></div>
+  <script type="text/javascript">
+      var window_width = $(window).width();
+      var window_height = $(window).height();
+      var term = new Terminal(
+            {
+                cols: Math.floor(window_width/9),
+                rows: Math.floor(window_height/20),
+                useStyle:false,
+                cursorBlink:false
+            }
+    );
+    term.open(document.getElementById('terminal'));
+      function show(){
+          $.ajax({
+              url:"/mywebssh/myterm/",
+              type:"POST",
+              contentType:"application/json;",
+              data: "ok",
+              success:function (res) {
+                  var data = JSON.parse(res);
+                  console.log(data["cmd"]);
+                  term.writeln(data["cmd"]);
+              }
+          });
+      }
+  </script>
+</body>
+</html>

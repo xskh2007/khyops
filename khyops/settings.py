@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_webssh',
     'channels',
+    #'dwebsocket',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'dwebsocket.middleware.WebSocketMiddleware',
 ]
 
 
@@ -169,3 +171,6 @@ from celery.schedules import crontab
 
 
 TMP_DIR = os.path.join(BASE_DIR, 'tmp')
+
+
+# WEBSOCKET_ACCEPT_ALL=True   # 可以允许每一个单独的视图实用websockets

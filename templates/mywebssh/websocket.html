@@ -1,0 +1,53 @@
+<html>
+<head>
+    <title>django-websocket</title>
+    <script src="/static/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#connect_websocket').click(function () {
+                if(window.s){
+                    // 如果已经连接了，就关闭，重新连接
+                    window.s.close()
+                }
+                var s = new WebSocket("ws://" + window.location.host + "/mywebssh/echo/");
+                s.onopen = function () {
+                    console.log('WebSocket open');
+                };
+                s.onmessage = function (e) {
+                    console.log('message: ' + e.data);
+                };
+                s.onclose = function (e) {
+                    console.log('WebSocket close');
+                };
+                // 把s挂到全局
+                window.s = s;
+            });
+
+            $('#send_message').click(function () {
+                if(!window.s){
+                    alert("Please connect server.");
+                }else{
+                    window.s.send($('#message').val());
+                }
+            });
+
+            $('#close_websocket').click(function () {
+                if(window.s){
+                    window.s.close();
+
+                }
+            });
+
+        });
+    </script>
+</head>
+
+<body>
+<input type="text" id="message" value="Hello, World!" />
+<button type="button" id="connect_websocket">Connect websocket</button>
+<button type="button" id="send_message">Send message</button>
+<button type="button" id="close_websocket">Close websocket</button>
+<h1>Received Messages</h1>
+<div id="messagecontainer"></div>
+</body>
+</html>

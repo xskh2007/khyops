@@ -19,6 +19,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from django.conf.urls import url
 from deploy import views
 from django_webssh import views as websshviews
 
@@ -26,6 +27,8 @@ urlpatterns = [
     path('',views.index,name='index'),
     path('deploy/', include(('deploy.urls', 'deploy'), namespace='deploy')),
     path('admin/', admin.site.urls),
-    path('webssh', websshviews.sshindex),
+    path('webssh/', websshviews.sshindex),
+    url(r'^mywebssh/', include('mywebssh.urls')),
+
 
 ]
