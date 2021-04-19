@@ -12,6 +12,7 @@ class SSH:
 
     def connect(self, host, user, password=None, ssh_key=None, port=22, timeout=30,
                 term='xterm', pty_width=80, pty_height=24):
+        print("0000000000000000000000")
         try:
             ssh_client = paramiko.SSHClient()
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -27,6 +28,7 @@ class SSH:
                 ssh_client.connect(username=user, password=password, hostname=host, port=port, timeout=timeout)
 
             transport = ssh_client.get_transport()
+            print(transport)
             self.channel = transport.open_session()
             self.channel.get_pty(term=term, width=pty_width, height=pty_height)
             self.channel.invoke_shell()
