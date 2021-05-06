@@ -258,6 +258,22 @@ desired effect
         <li><a href="{% url 'deploy:index' %}"><i class="fa fa-server"></i> <span>服务器列表</span></a></li>
         <li><a href="{% url 'deploy:index' %}"><i class="fa fa-exchange"></i> <span>导入导出</span></a></li>
 
+
+          <li class="treeview menu-open" style="height: auto;">
+          <a href="#">
+            <i class="fa fa-pie-chart"></i>
+            <span>新版本部署</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu" style="display: block;">
+            <li><a href="{% url 'deploy:addserver' %}"><i class="fa fa-table"></i> 添加服务器</a></li>
+            <li><a href="{% url 'deploy:index' %}"><i class="fa fa-server"></i> 服务器列表</a></li>
+          </ul>
+        </li>
+
+
       </ul>
       <!-- /.sidebar-menu -->
     </section>

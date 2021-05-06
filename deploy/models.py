@@ -12,6 +12,10 @@ class Servers(models.Model):
     ip = models.GenericIPAddressField(default='127.0.0.1')
     serveruser = models.CharField(default='root',max_length=200)
     password = models.CharField(default='',max_length=200)
+    version = models.IntegerField(choices=((0, '老版本'),
+                                              (1, '新版本')),
+                                     default=1,
+                                     verbose_name='新版本')
     region = models.CharField(default='root',max_length=200)
     servername = models.UUIDField(default=uuid.uuid4, editable=False)
     icpurl=models.CharField(default='',max_length=200)
