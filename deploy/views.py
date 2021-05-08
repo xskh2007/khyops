@@ -5,17 +5,49 @@ from django.http import JsonResponse,HttpResponse
 from .ansibleapi import Exec
 from .newansibleapi import Exec as NewExec
 from .task import *
+from django.contrib import auth
+from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
 from django.http import HttpResponse
 
+@login_required
 def index(request):
     assets = models.Servers.objects.all()
     # print(assets)
     return render(request, 'deploy/assets.html', locals())
     # return render(request, 'deploy/index.html', locals())
 
+
+def login(request):
+    if request.method == 'GET':
+        return render(request, 'login.html', locals())
+
+    if request.method == 'POST':
+
+        name = request.POST.get('name')
+        password = request.POST.get('password')
+        # 验证用户名和密码，验证通过的话，返回user对象
+        user = auth.authenticate(username=name, password=password)
+        print(name,password,user)
+        if user:
+            # 验证成功 登陆
+            auth.login(request, user)
+            print("登陆成功")
+            return render(request, 'deploy/assets.html')
+
+        else:
+            print("登陆失败")
+            return HttpResponseRedirect('/login')
+
+def logout(request):
+    if request.method == 'GET':
+        auth.logout(request)
+        return HttpResponseRedirect('/login')
+
+@login_required
 def addserver(request):
     if request.method == "POST":
         print(request.POST)
@@ -23,6 +55,8 @@ def addserver(request):
         domain = request.POST["domain"]
         serverip = request.POST["serverip"]
         password = request.POST["password"]
+        deployversion=request.POST["deployversion"]
+        pid=request.POST["pid"]
         deploymodel=request.POST["deploymodel"]
         print(deploymodel)
         if request.POST["region"].strip()=="" or request.POST["region"]==None:
@@ -33,7 +67,7 @@ def addserver(request):
 
         # print username, password, email, address, cards, numbers
         models.Servers.objects.create(company=company,domain=domain,ip=serverip,password=password,region=region,icpurl=icpurl,
-                                      deploymodel=deploymodel)
+                                      deploymodel=deploymodel,deployversion=deployversion,pid=pid)
         # models.User.objects.create(user_name=username, user_password=password, user_email=email, user_address=address,
                                    # user_cards=cards, user_numbers=numbers)
         return redirect('/deploy/')
@@ -43,7 +77,7 @@ def addserver(request):
         return render(request, 'deploy/addserver.html', locals())
         # return render(request, 'deploy/index.html', locals())
 
-
+@login_required
 def deploy(request):
     # from multiprocessing import current_process
     # current_process()._config = {'semprefix': '/mp'}
@@ -56,18 +90,28 @@ def deploy(request):
     password=models.Servers.objects.get(ip=host).password
     region=models.Servers.objects.get(ip=host).region
     deploymodel=models.Servers.objects.get(ip=host).deploymodel
+    deployversion=models.Servers.objects.get(ip=host).deployversion
+    pid=models.Servers.objects.get(ip=host).pid
     icpurl=models.Servers.objects.get(ip=host).icpurl
-    print(icpurl,'ppppppppppppppppppppp')
-    if region=="贵州":
-        proxy_domain="56fanyun.com"
-    else:
-        proxy_domain = "kuaihuoyun.com"
-    res=onekeydeploy.delay(host=host,domain=domain,password=password,company=company,proxy_domain=proxy_domain,deploymodel=deploymodel,icpurl=icpurl)
-    # res=add.delay(3,5)
-    print(res,"mmmmmmmmmmmmmmmmmmmm")
-    return HttpResponse("网站部署中,请稍等片刻,刷新页面查看部署状态...")
+    print('ppppppppppppppppppppp',deployversion)
+    if deployversion==0:
+
+        if region=="贵州":
+            proxy_domain="56fanyun.com"
+        else:
+            proxy_domain = "kuaihuoyun.com"
+        res=onekeydeploy.delay(host=host,domain=domain,password=password,company=company,proxy_domain=proxy_domain,deploymodel=deploymodel,icpurl=icpurl)
+        # res=add.delay(3,5)
+        print(res,"mmmmmmmmmmmmmmmmmmmm")
+        return HttpResponse("网站部署中,请稍等片刻,刷新页面查看部署状态...")
+    elif deployversion==1:
+        print(deployversion,pid)
+        res=newonekeydeploy.delay(host=host,domain=domain,password=password,company=company,deploymodel=deploymodel,icpurl=icpurl,pid=pid)
+        print(res,"mmmmmmmmmmmmmmmmmmmm")
+        return HttpResponse("网站部署中,请稍等片刻,刷新页面查看部署状态...")
 
 
+@login_required
 def checkping(request):
     print(request.POST)
     host=request.POST["ip"]
@@ -97,7 +141,7 @@ def checkport443(request):
     else:
        return HttpResponse("443 is Not ok")
 
-
+@login_required
 def checkport22(request):
     host=request.POST["ip"]
     import socket;

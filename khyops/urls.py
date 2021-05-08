@@ -25,6 +25,8 @@ from django_webssh import views as websshviews
 
 urlpatterns = [
     path('',views.index,name='index'),
+    path('login', views.login, name='login'),
+    path('logout', views.logout, name='logout'),
     path('deploy/', include(('deploy.urls', 'deploy'), namespace='deploy')),
     path('admin/', admin.site.urls),
     path('webssh/', websshviews.sshindex),
