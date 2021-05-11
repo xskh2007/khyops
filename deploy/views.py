@@ -57,8 +57,9 @@ def addserver(request):
         password = request.POST["password"]
         deployversion=request.POST["deployversion"]
         pid=request.POST["pid"]
+        iswww=request.POST.getlist("iswww")
         deploymodel=request.POST["deploymodel"]
-        print(deploymodel)
+        print(deploymodel,iswww)
         if request.POST["region"].strip()=="" or request.POST["region"]==None:
             region = "山西"
         else:
@@ -66,8 +67,13 @@ def addserver(request):
         icpurl = request.POST["icpurl"]
 
         # print username, password, email, address, cards, numbers
-        models.Servers.objects.create(company=company,domain=domain,ip=serverip,password=password,region=region,icpurl=icpurl,
-                                      deploymodel=deploymodel,deployversion=deployversion,pid=pid)
+        if len(iswww) >0:
+            models.Servers.objects.create(company=company, domain=domain, ip=serverip, password=password, region=region,
+                                          icpurl=icpurl,
+                                          deploymodel=deploymodel, deployversion=deployversion, pid=pid,iswww=1)
+        elif len(iswww)==0:
+            models.Servers.objects.create(company=company,domain=domain,ip=serverip,password=password,region=region,icpurl=icpurl,
+                                      deploymodel=deploymodel,deployversion=deployversion,pid=pid,iswww=0)
         # models.User.objects.create(user_name=username, user_password=password, user_email=email, user_address=address,
                                    # user_cards=cards, user_numbers=numbers)
         return redirect('/deploy/')
@@ -92,10 +98,11 @@ def deploy(request):
     deploymodel=models.Servers.objects.get(ip=host).deploymodel
     deployversion=models.Servers.objects.get(ip=host).deployversion
     pid=models.Servers.objects.get(ip=host).pid
+    iswww=models.Servers.objects.get(ip=host).iswww
     icpurl=models.Servers.objects.get(ip=host).icpurl
     print('ppppppppppppppppppppp',deployversion)
     if deployversion==0:
-
+        #老版本部署
         if region=="贵州":
             proxy_domain="56fanyun.com"
         else:
@@ -105,8 +112,9 @@ def deploy(request):
         print(res,"mmmmmmmmmmmmmmmmmmmm")
         return HttpResponse("网站部署中,请稍等片刻,刷新页面查看部署状态...")
     elif deployversion==1:
+        #新版本部署
         print(deployversion,pid)
-        res=newonekeydeploy.delay(host=host,domain=domain,password=password,company=company,deploymodel=deploymodel,icpurl=icpurl,pid=pid)
+        res=newonekeydeploy.delay(host=host,domain=domain,password=password,company=company,deploymodel=deploymodel,icpurl=icpurl,pid=pid,iswww=iswww)
         print(res,"mmmmmmmmmmmmmmmmmmmm")
         return HttpResponse("网站部署中,请稍等片刻,刷新页面查看部署状态...")
 

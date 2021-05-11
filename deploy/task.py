@@ -159,7 +159,7 @@ def onekeydeploy(host="",domain="",password="",company="",proxy_domain="",deploy
 
 
 @shared_task
-def newonekeydeploy(host="",domain="",password="",company="",deploymodel="",icpurl = 'http://5ff2d1dd84d6b.icp.jinsan168.com/t/5ff2d1dd84d6b',pid=''):
+def newonekeydeploy(host="",domain="",password="",company="",deploymodel="",icpurl = 'http://5ff2d1dd84d6b.icp.jinsan168.com/t/5ff2d1dd84d6b',pid='',iswww=1):
     # from multiprocessing import current_process
     # current_process()._config = {'semprefix': '/mp'}
     current_process()._config = {'semprefix': '/mp'}
@@ -208,15 +208,28 @@ def newonekeydeploy(host="",domain="",password="",company="",deploymodel="",icpu
     print(installnginx_res)
 
     #拷贝nginx配置文件
-    configurenginxargs="src="+deploypath+"/temp/%s/new-nginx-wlhy.conf dest=/etc/nginx/sites-enabled/"%(domain)
-    print("++++++++++++",domain,configurenginxargs,"-----------------")
-    configurengin = Exec(playname='configurengin',host=host, host_list=host_list, username=username, password=password, module='copy', args=configurenginxargs)
-    configurengin_res=configurengin.myexec()
-    if configurengin_res==0:
-        task_res["configurengin_res"] = "success"
-    else:
-        task_res["configurengin_res"] = "fail"
-    print(configurengin_res)
+    if iswww==1:
+        configurenginxargs="src="+deploypath+"/temp/%s/new-nginx-wlhy.conf dest=/etc/nginx/sites-enabled/"%(domain)
+        print("++++++++++++",domain,configurenginxargs,"-----------------")
+        configurengin = Exec(playname='configurengin',host=host, host_list=host_list, username=username, password=password, module='copy', args=configurenginxargs)
+        configurengin_res=configurengin.myexec()
+        if configurengin_res==0:
+            task_res["configurengin_res"] = "success"
+        else:
+            task_res["configurengin_res"] = "fail"
+        print(configurengin_res)
+    if iswww==0:
+        configurenginxargs = "src=" + deploypath + "/temp/%s/nowww-new-nginx-wlhy.conf dest=/etc/nginx/sites-enabled/" % (
+            domain)
+        print("++++++++++++", domain, configurenginxargs, "-----------------")
+        configurengin = Exec(playname='configurengin', host=host, host_list=host_list, username=username,
+                             password=password, module='copy', args=configurenginxargs)
+        configurengin_res = configurengin.myexec()
+        if configurengin_res == 0:
+            task_res["configurengin_res"] = "success"
+        else:
+            task_res["configurengin_res"] = "fail"
+        print(configurengin_res)
 
     #拷贝acme
     acmeargs="src="+deploypath+"/pack/acme.sh.tar.gz dest=/root/"
@@ -229,7 +242,7 @@ def newonekeydeploy(host="",domain="",password="",company="",deploymodel="",icpu
     print(copyacme_res)
 
     #拷贝acme脚本
-    installacmeargs="src="+deploypath+"/pack/installacme.sh dest=/root/"
+    installacmeargs="src="+deploypath+"/pack/newinstallacme.sh dest=/root/"
     copyacme=Exec(playname='copyacme',host=host,host_list=host_list,username=username,password=password,module='copy', args=installacmeargs)
     copyacme_res=copyacme.myexec()
     if copyacme_res==0:
@@ -238,7 +251,7 @@ def newonekeydeploy(host="",domain="",password="",company="",deploymodel="",icpu
         task_res["copyacme_res"] = "fail"
     print(copyacme_res)
 
-    installacme=Exec(playname='installacme',host=host,host_list=host_list,username=username,password=password,module='shell', args='bash /root/installacme.sh %s'%(domain))
+    installacme=Exec(playname='installacme',host=host,host_list=host_list,username=username,password=password,module='shell', args='bash /root/newinstallacme.sh %s %s'%(domain,iswww))
     installacme_res=installacme.myexec()
     if installacme_res==0:
         task_res["installacme_res"] = "success"

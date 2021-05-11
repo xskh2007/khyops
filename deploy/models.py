@@ -17,6 +17,10 @@ class Servers(models.Model):
                                      default=1,
                                      verbose_name='新版本')
     pid = models.CharField(null=False,blank=False,default='p0',max_length=200)
+    iswww = models.IntegerField(choices=((0, '否'),
+                                              (1, '是')),
+                                     default=1,
+                                     verbose_name='是否部署www')
     region = models.CharField(default='root',max_length=200)
     servername = models.UUIDField(default=uuid.uuid4, editable=False)
     icpurl=models.CharField(default='',max_length=200)

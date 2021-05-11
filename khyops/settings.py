@@ -174,3 +174,8 @@ TMP_DIR = os.path.join(BASE_DIR, 'tmp')
 
 
 # WEBSOCKET_ACCEPT_ALL=True   # 可以允许每一个单独的视图实用websockets
+
+
+
+
+LOGIN_URL = '/login'
