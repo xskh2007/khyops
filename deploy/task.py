@@ -290,6 +290,45 @@ def newonekeydeploy(host="",domain="",password="",company="",deploymodel="",icpu
             task_res["scpindex_res"] = "fail"
         print("scpindex_res-------",scpindex_res)
 
+    ###生成updatessl.sh
+    updatasslstr='''#!/bin/bash
+ /root/.acme.sh/acme.sh --issue -d www.__DOMAIN__ --webroot /var/www/html --force
+ /root/.acme.sh/acme.sh --issue -d wlhy.__DOMAIN__ --webroot /var/www/html --force
+ /root/.acme.sh/acme.sh --issue -d bops.__DOMAIN__ --webroot /var/www/html --force
+ /root/.acme.sh/acme.sh --issue -d driver.__DOMAIN__ --webroot /var/www/html --force
+ /root/.acme.sh/acme.sh --installcert -d www.__DOMAIN__ --key-file /etc/nginx/ssl/www.__DOMAIN__.key --fullchain-file /etc/nginx/ssl/www.__DOMAIN__.cer
+ /root/.acme.sh/acme.sh --installcert -d wlhy.__DOMAIN__ --key-file /etc/nginx/ssl/wlhy.__DOMAIN__.key --fullchain-file /etc/nginx/ssl/wlhy.__DOMAIN__.cer
+ /root/.acme.sh/acme.sh --installcert -d bops.__DOMAIN__ --key-file /etc/nginx/ssl/bops.__DOMAIN__.key --fullchain-file /etc/nginx/ssl/bops.__DOMAIN__.cer
+ /root/.acme.sh/acme.sh --installcert -d driver.__DOMAIN__ --key-file /etc/nginx/ssl/driver.__DOMAIN__.key --fullchain-file /etc/nginx/ssl/driver.__DOMAIN__.cer
+ service nginx restart'''
+    updatasslstr=updatasslstr.replace("__DOMAIN__",domain)
+    file_path=deploypath+"/temp/"+domain+"/updatessl.sh"
+    fo = open(file_path, "w")
+    fo.write(updatasslstr)
+    fo.close()
+    print("sssssssssllllllllll")
+
+    scpsslxargs="src="+file_path+" dest=/root/"
+    scpssl = Exec(playname='scpssl', host=host, host_list=host_list, username=username, password=password,
+                    module='copy', args=scpsslxargs)
+    scpssl_res = scpssl.myexec()
+    if scpssl_res == 0:
+        task_res["scpssl_res"] = "success"
+    else:
+        task_res["scpssl_res"] = "fail"
+    print(scpssl_res)
+
+
+    addcronxargs="minute=6 hour=6 day=* month=* weekday=* name='updatessl' backup=yes job='sh /root/updatessl.sh'"
+    addcron = Exec(playname='addcronxargs', host=host, host_list=host_list, username=username, password=password,
+                  module='cron', args=addcronxargs)
+    addcron_res = addcron.myexec()
+    if addcron_res == 0:
+        task_res["addcron_res"] = "success"
+    else:
+        task_res["addcron_res"] = "fail"
+    print(addcron_res)
+
     for v in task_res.values():
         if v=="success":
             models.Servers.objects.filter(ip=host).update(deploystatus=1)
